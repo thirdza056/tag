@@ -402,7 +402,7 @@ def lineBot(op):
                     kicker01.sendContact(to, "u66d4c27e8f45f025cf5774883b67ddc1")
                     kicker02.sendMessage(to, '⇛Create it By.Ge™⇚')
                     kicker03.sendMessage(to, '⇛Made in Taiwan⇚')
-            elif msg.text in ["BOTTOKEN"]:
+                elif msg.text in ["BOTTOKEN"]:
                     cl.sendMessage(to,str(cl.authToken))
                     kicker01.sendMessage(to,str(kicker01.authToken))
                     kicker02.sendMessage(to,str(kicker02.authToken))
