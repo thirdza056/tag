@@ -144,9 +144,9 @@ def lineBot(op):
             group = cl.getGroup(op.param1)
             contact2 = cl.getContact(op.param3)
             print ("[ KICK ]有人把人踢出群組 群組名稱: " + str(group.name) + "\n" + op.param1 +"\n踢人的人: " + contact1.displayName + "\nMid: " + contact1.mid + "\n被踢的人" + contact2.displayName + "\nMid:" + contact2.mid )
-            cl.sendMessage(ge,"《踢出群組》" + "\n》群組名稱:" + str(group.name) +"\n》踢人的人: " + contact1.displayName + "\n》Mid: " + contact1.mid + "\n》被踢的人" + contact2.displayName + "\n》Mid:" + contact2.mid )
+            cl.sendMessage(ge,"《踢出群組》" + "\n》群組名稱:" + str(group.name) +"\n》踢人的人: " + contact1.displayName + "\n》Mid: " + contact1.mid + "\n》被踢的人" + contact2.displayName + "\n》Mid: " + contact2.mid )
             try:
-                if op.param2 not in admin:
+                if op.param3 not in admin:
                     try:
                         arrData = ""
                         text = "%s " %('#')
@@ -154,7 +154,7 @@ def lineBot(op):
                         mention = "@x "
                         slen = str(len(text))
                         elen = str(len(text) + len(mention) - 1)
-                        arrData = {'S':slen, 'E':elen, 'M':op.param2}
+                        arrData = {'S':slen, 'E':elen, 'M':op.param3}
                         arr.append(arrData)
                         text += mention + '掰掰QAO/'
                         cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
