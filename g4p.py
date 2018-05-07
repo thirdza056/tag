@@ -341,7 +341,7 @@ def lineBot(op):
             msg_id = msg.id
             receiver = msg.to
             sender = msg._from
-            
+
             #收回記錄
             try:
                 if settings["reread"] == True and op.type == 26:
@@ -356,7 +356,7 @@ def lineBot(op):
             except Exception as e:
                 print(e)
             #收回記錄end
-            
+
             if msg.toType == 0:
                 if sender != cl.profile.mid:
                     to = sender
@@ -890,4 +890,15 @@ def lineBot(op):
                 else:
                     pass
             except Exception as e:
-                print(e)
+                print(e)
+    except Exception as error:
+        logError(error)
+while True:
+    try:
+        ops = oepoll.singleTrace(count=50)
+        if ops is not None:
+            for op in ops:
+                lineBot(op)
+                oepoll.setRevision(op.revision)
+    except Exception as e:
+        logError(e)
