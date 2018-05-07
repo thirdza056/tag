@@ -407,15 +407,6 @@ def lineBot(op):
                     kicker01.sendMessage(to,str(kicker01.authToken))
                     kicker02.sendMessage(to,str(kicker02.authToken))
                     kicker03.sendMessage(to,str(kicker03.authToken))
-                elif text.lower() == 'bot bye':
-                    if msg.toType == 2:
-                        ginfo = cl.getGroup(to)
-                        try:
-                            kicker01.leaveGroup(to)
-                            kicker02.leaveGroup(to)
-                            kicker03.leaveGroup(to)
-                        except:
-                            pass
                 elif text.lower() == 'bot join':
                     if msg.toType == 2:
                         G = cl.getGroup(to)
@@ -438,6 +429,15 @@ def lineBot(op):
                             kicker03.acceptGroupInvitationByTicket(to, Ti)
                             G.preventedJoinByTicket = True
                             cl.updateGroup(G)
+                elif text.lower() == 'bot bye':
+                    if msg.toType == 2:
+                        ginfo = cl.getGroup(to)
+                        try:
+                            kicker01.leaveGroup(to)
+                            kicker02.leaveGroup(to)
+                            kicker03.leaveGroup(to)
+                        except:
+                            pass
                 elif text.lower() == 'shuvui join':
                     if msg.toType == 2:
                         G = cl.getGroup(to)
