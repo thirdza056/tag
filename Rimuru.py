@@ -160,6 +160,13 @@ def lineBot(op):
                         cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
                     except Exception as error:
                         print(error) 
+                elif op.param3 in master:
+                    cl.sendMessage(op.param1,"《！最高權限者保護！》")
+                    time.sleep(0.2)
+                    kickers.kickoutFromGroup(op.param1,op.param2)
+                    time.sleep(0.2)
+                    cl.findAndAddContactsByMid(master)
+                    cl.inviteIntoGroup(op.param1,[master])
             except:
                 settings["blacklist"][op.param2] = True
                 cl.sendMessage(op.param2, "《BLACK》\n不好意思,您違反了使用規定\n因此被莉姆露列為黑單\n無法再使用任何指令功能\n詳情請看主頁公告")
