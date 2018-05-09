@@ -29,7 +29,7 @@ wait2 = {
 setTime = {}
 setTime = wait2['setTime']
 admin=[clMID]
-master=['u66d4c27e8f45f025cf5774883b67ddc1',clMID]
+master=['u66d4c27e8f45f025cf5774883b67ddc1']
 msg_dict = {}
 bl = [""]
 def cTime_to_datetime(unixtime):
@@ -160,13 +160,13 @@ def lineBot(op):
                         cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
                     except Exception as error:
                         print(error) 
-                elif op.param3 in master:
+                elif ge in op.param3:
                     cl.sendMessage(op.param1,"《！最高權限者保護！》")
                     time.sleep(0.2)
                     kickers.kickoutFromGroup(op.param1,op.param2)
                     time.sleep(0.2)
-                    cl.findAndAddContactsByMid(master)
-                    cl.inviteIntoGroup(op.param1,[master])
+                    cl.findAndAddContactsByMid(ge)
+                    cl.inviteIntoGroup(op.param1,[ge])
             except:
                 settings["blacklist"][op.param2] = True
                 cl.sendMessage(op.param2, "《BLACK》\n不好意思,您違反了使用規定\n因此被莉姆露列為黑單\n無法再使用任何指令功能\n詳情請看主頁公告")
@@ -187,6 +187,29 @@ def lineBot(op):
             else:
                 to = receiver
             if sender in master:
+                if sender in settings['limit']:
+                    if msg.text in settings['limit'][sender]['text']:
+                        if settings ['limit'][sender]['text'][msg.text] >= 3:
+                            settings ['limit'][sender]['text']['react'] = False
+                        else:
+                            settings ['limit'][sender]['text'][msg.text] += 1
+                            settings ['limit'][sender]['text']['react'] = True
+                    else:
+                        try:
+                            del settings['limit'][sender]['text']
+                        except:
+                            pass
+                        settings['limit'][sender]['text'] = {}
+                        settings['limit'][sender]['text'][msg.text] = 1
+                        settings['limit'][sender]['text']['react'] = True
+                else:
+                    settings['limit'][sender] = {}
+                    settings['limit'][sender]['stick'] = {}
+                    settings['limit'][sender]['text'] = {}
+                    settings['limit'][sender]['text'][msg.text] = 1
+                    settings['limit'][sender]['text']['react'] = True
+                if settings['limit'][sender]['text']['react'] == False:
+                    return
                 if "KICK " in msg.text:
                     key = eval(msg.contentMetadata["MENTION"])
                     key["MENTIONEES"][0]["M"]
@@ -389,6 +412,29 @@ def lineBot(op):
                 if text is None:
                     return
                 if not sender in settings['blacklist']:
+                    if sender in settings['limit']:
+                        if msg.text in settings['limit'][sender]['text']:
+                            if settings ['limit'][sender]['text'][msg.text] >= 3:
+                                settings ['limit'][sender]['text']['react'] = False
+                            else:
+                                settings ['limit'][sender]['text'][msg.text] += 1
+                                settings ['limit'][sender]['text']['react'] = True
+                        else:
+                            try:
+                                del settings['limit'][sender]['text']
+                            except:
+                                pass
+                            settings['limit'][sender]['text'] = {}
+                            settings['limit'][sender]['text'][msg.text] = 1
+                            settings['limit'][sender]['text']['react'] = True
+                    else:
+                        settings['limit'][sender] = {}
+                        settings['limit'][sender]['stick'] = {}
+                        settings['limit'][sender]['text'] = {}
+                        settings['limit'][sender]['text'][msg.text] = 1
+                        settings['limit'][sender]['text']['react'] = True
+                    if settings['limit'][sender]['text']['react'] == False:
+                        return
                     if msg.text in ["help","Help","HELP"]:
                         helpMessage = helpmessage()
                         cl.sendMessage(to, str(helpMessage))
