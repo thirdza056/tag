@@ -39,6 +39,8 @@
     "kickjoin": false,
     "kickmeber": true,
     "lang": "JP",
+    "limit":{
+    },
     "mimic": {
         "copy": false,
         "status": true,
