@@ -29,7 +29,7 @@ wait2 = {
 setTime = {}
 setTime = wait2['setTime']
 admin=[clMID]
-master=['u66d4c27e8f45f025cf5774883b67ddc1',clMID]
+master=['u66d4c27e8f45f025cf5774883b67ddc1']
 msg_dict = {}
 bl = [""]
 def cTime_to_datetime(unixtime):
@@ -132,7 +132,7 @@ def lineBot(op):
                 else:
                     if op.param3 in admin:
                         print ("[ NEWJOIN ]使用者邀請加入群組: " + str(group.name))
-                        cl.sendMessage(ge, "《普通使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2 + "\n》被邀請者名稱:" + contact2.displayName + "\n》被邀請者mid:\n" + op.param3)
+                        cl.sendMessage(ge,"《普通使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2 + "\n》被邀請者名稱:" + contact2.displayName + "\n》被邀請者mid:\n" + op.param3)
                         cl.acceptGroupInvitation(op.param1)
                         time.sleep(0.5)
                         cl.sendMessage(op.param1,"《使用者 " + contact1.displayName + " 邀請》")
@@ -144,15 +144,35 @@ def lineBot(op):
             group = cl.getGroup(op.param1)
             contact2 = cl.getContact(op.param3)
             print ("[ KICK ]有人把人踢出群組 群組名稱: " + str(group.name) + "\n" + op.param1 +"\n踢人的人: " + contact1.displayName + "\nMid: " + contact1.mid + "\n被踢的人" + contact2.displayName + "\nMid:" + contact2.mid )
+            cl.sendMessage(ge,"《踢出群組》" + "\n》群組名稱:" + str(group.name) +"\n》踢人的人: " + contact1.displayName + "\n》Mid: " + contact1.mid + "\n》被踢的人" + contact2.displayName + "\n》Mid: " + contact2.mid )
             try:
-                cl.sendMessage(op.param1,"《被踢的人》")
-                cl.sendContact(op.param1,op.param3)
+                if op.param3 not in admin:
+                    try:
+                        arrData = ""
+                        text = "%s " %('#')
+                        arr = []
+                        mention = "@x "
+                        slen = str(len(text))
+                        elen = str(len(text) + len(mention) - 1)
+                        arrData = {'S':slen, 'E':elen, 'M':op.param3}
+                        arr.append(arrData)
+                        text += mention + '掰掰QAO/'
+                        cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
+                    except Exception as error:
+                        print(error) 
+                elif ge in op.param3:
+                    cl.sendMessage(op.param1,"《！最高權限者保護！》")
+                    time.sleep(0.2)
+                    kickers.kickoutFromGroup(op.param1,op.param2)
+                    time.sleep(0.2)
+                    cl.findAndAddContactsByMid(ge)
+                    cl.inviteIntoGroup(op.param1,[ge])
             except:
                 settings["blacklist"][op.param2] = True
                 cl.sendMessage(op.param2, "《BLACK》\n不好意思,您違反了使用規定\n因此被莉姆露列為黑單\n無法再使用任何指令功能\n詳情請看主頁公告")
                 cl.sendMessage(ge, "《黑單通知》" + "\n》顯示名稱:" + contact1.displayName + "\n》黑單者MID:\n" + op.param2)
         if op.type == 24:
-                cl.leaveRoom(op.param1)
+            cl.leaveRoom(op.param1)
         if op.type == 26 or op.type == 25:
             msg = op.message
             text = msg.text
@@ -369,6 +389,30 @@ def lineBot(op):
                 if text is None:
                     return
                 if not sender in settings['blacklist']:
+                    if sender in settings['limit']:
+                        if msg.text in settings['limit'][sender]['text']:
+                            if settings ['limit'][sender]['text'][msg.text] >= 3:
+                                settings ['limit'][sender]['text']['react'] = False
+                            else:
+                                settings ['limit'][sender]['text'][msg.text] += 1
+                                settings ['limit'][sender]['text']['react'] = True
+                        else:
+                            try:
+                                del settings['limit'][sender]['text']
+                            except:
+                                pass
+                            settings['limit'][sender]['text'] = {}
+                            settings['limit'][sender]['text'][msg.text] = 1
+                            settings['limit'][sender]['text']['react'] = True
+                    else:
+                        settings['limit'][sender] = {}
+                        settings['limit'][sender]['stick'] = {}
+                        settings['limit'][sender]['text'] = {}
+                        settings['limit'][sender]['text'][msg.text] = 1
+                        settings['limit'][sender]['text']['react'] = True
+                    if sender not in master:
+                        if settings['limit'][sender]['text']['react'] == False:
+                            return
                     if msg.text in ["help","Help","HELP"]:
                         helpMessage = helpmessage()
                         cl.sendMessage(to, str(helpMessage))
@@ -590,29 +634,14 @@ def lineBot(op):
                         elen = str(len(text) + len(mention) - 1)
                         arrData = {'S':slen, 'E':elen, 'M':mid}
                         arr.append(arrData)
-                        text += mention + "\n《文章預覽》\n" + msg.contentMetadata["text"] + "\n[文章網址]\n " + msg.contentMetadata["postEndUrl"]
+                        text += mention + "\n《文章預覽》\n" + msg.contentMetadata["text"] + "\n《文章網址》\n " + msg.contentMetadata["postEndUrl"]
                         cl.sendMessage(msg.to,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
                     except Exception as error:
                         print(error)
                 except: 
                     msg.contentType = 0
                     ret_ = "《文章預覽》\n" + msg.contentMetadata["text"]
-                    ret_ += "\n《文章網址》\n" + msg.contentMetadata["postEndUrl"]
                     cl.sendMessage(msg.to, ret_)
-        if op.type == 26:
-            msg = op.message
-            text = msg.text
-            msg_id = msg.id
-            receiver = msg.to
-            sender = msg._from
-            if msg.toType == 0:
-                if sender != cl.profile.mid:
-                    to = sender
-                else:
-                    to = receiver
-            else:
-                to = receiver
-                cl.sendChatChecked(to, msg_id)
         if op.type == 26:
             try:
                 msg = op.message
@@ -645,24 +674,6 @@ def lineBot(op):
                         cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
                     except Exception as error:
                         print(error) 
-        if op.type == 61:
-            if op.param2 in settings['blacklist']:
-                pass
-            else:
-                if op.param2 not in admin:
-                    try:
-                        arrData = ""
-                        text = "%s " %('#')
-                        arr = []
-                        mention = "@x "
-                        slen = str(len(text))
-                        elen = str(len(text) + len(mention) - 1)
-                        arrData = {'S':slen, 'E':elen, 'M':op.param2}
-                        arr.append(arrData)
-                        text += mention + '掰掰QAO/'
-                        cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
-                    except Exception as error:
-                        print(error) 
         if op.type == 65:
             try:
                 ge = ("u66d4c27e8f45f025cf5774883b67ddc1")
@@ -675,8 +686,16 @@ def lineBot(op):
                         if msg_id in msg_dict:
                             if msg_dict[msg_id]["from"] not in bl:
                                 print (msg_dict[msg_id]["from"])
-                                cl.sendMessage(ge,"》收回者:\n" + msg_dict[msg_id]["from"])
-                                cl.sendMessage(at,"《莉姆露看到有人收回訊息》\n%s\n《收回的訊息內容》\n%s"%(cl.getContact(msg_dict[msg_id]["from"]).displayName,msg_dict[msg_id]["text"]))
+                                arrData = ""
+                                text = "%s " %("《莉姆露看到有人收回訊息》\n")
+                                arr = []
+                                mention = "@x "
+                                slen = str(len(text))
+                                elen = str(len(text) + len(mention) - 1)
+                                arrData = {'S':slen, 'E':elen, 'M':msg_dict[msg_id]["from"]}
+                                arr.append(arrData)
+                                text += mention + "\n" +msg_dict[msg_id]["text"]
+                                cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
                             del msg_dict[msg_id]
                 else:
                     pass
