@@ -263,6 +263,14 @@ def lineBot(op):
                         cl.sendMessage(mmid, "《BLACK》\n不好意思,您違反了使用規定\n因此被莉姆露列為黑單\n無法再使用任何指令功能\n詳情請看主頁公告")
                     except:
                         pass
+                elif "MBK " in msg.text:
+                    mmid = msg.text.replace("MBK ","")
+                    print ("[ JMBAN ] 成功")
+                    try:
+                        settings["blacklist"][mmid] = True
+                        cl.sendMessage(to, "《加入黑名單》")
+                    except:
+                        pass
                 elif msg.text in ["CLEAR BLACKLIST"]:
                     for mi_d in settings["blacklist"]:
                         settings["blacklist"] = {}
