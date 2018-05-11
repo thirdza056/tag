@@ -146,10 +146,9 @@ def lineBot(op):
             print ("[ KICK ]有人把人踢出群組 群組名稱: " + str(group.name) + "\n" + op.param1 +"\n踢人的人: " + contact1.displayName + "\nMid: " + contact1.mid + "\n被踢的人" + contact2.displayName + "\nMid:" + contact2.mid )
             cl.sendMessage(ge,"《踢出群組》" + "\n》群組名稱:" + str(group.name) +"\n》踢人的人: " + contact1.displayName + "\n》Mid: " + contact1.mid + "\n》被踢的人" + contact2.displayName + "\n》Mid: " + contact2.mid )
             try:
-                if op.param3 not in admin:
-                    try:
-                        arrData = ""
-                        text = "%s " %('#')
+                if op.param3 not in admin or master:
+                    arrData = ""
+                    text = "%s " %('#')
                         arr = []
                         mention = "@x "
                         slen = str(len(text))
@@ -158,15 +157,8 @@ def lineBot(op):
                         arr.append(arrData)
                         text += mention + '掰掰QAO/'
                         cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
-                    except Exception as error:
-                        print(error) 
-                elif ge in op.param3:
-                    cl.sendMessage(op.param1,"《！最高權限者保護！》")
-                    time.sleep(0.2)
-                    kickers.kickoutFromGroup(op.param1,op.param2)
-                    time.sleep(0.2)
-                    cl.findAndAddContactsByMid(ge)
-                    cl.inviteIntoGroup(op.param1,[ge])
+                elif:
+                    pass
             except:
                 settings["blacklist"][op.param2] = True
                 cl.sendMessage(op.param2, "《BLACK》\n不好意思,您違反了使用規定\n因此被莉姆露列為黑單\n無法再使用任何指令功能\n詳情請看主頁公告")
