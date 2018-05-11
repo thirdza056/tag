@@ -149,20 +149,19 @@ def lineBot(op):
                 if op.param3 not in admin or master:
                     arrData = ""
                     text = "%s " %('#')
-                        arr = []
-                        mention = "@x "
-                        slen = str(len(text))
-                        elen = str(len(text) + len(mention) - 1)
-                        arrData = {'S':slen, 'E':elen, 'M':op.param3}
-                        arr.append(arrData)
-                        text += mention + '掰掰QAO/'
-                        cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
-                elif:
-                    pass
+                    arr = []
+                    mention = "@x "
+                    slen = str(len(text))
+                    elen = str(len(text) + len(mention) - 1)
+                    arrData = {'S':slen, 'E':elen, 'M':op.param3}
+                    arr.append(arrData)
+                    text += mention + '掰掰QAO/'
+                    cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
             except:
                 settings["blacklist"][op.param2] = True
                 cl.sendMessage(op.param2, "《BLACK》\n不好意思,您違反了使用規定\n因此被莉姆露列為黑單\n無法再使用任何指令功能\n詳情請看主頁公告")
                 cl.sendMessage(ge, "《黑單通知》" + "\n》顯示名稱:" + contact1.displayName + "\n》黑單者MID:\n" + op.param2)
+                print("《黑單通知》" + "顯示名稱:" + contact1.displayName + "》黑單者MID:" + op.param2)
         if op.type == 24:
             cl.leaveRoom(op.param1)
         if op.type == 26 or op.type == 25:
