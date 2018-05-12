@@ -16,8 +16,13 @@ cl.log("莉姆露TOKEN:" + str(cl.authToken))
 
 print ("======Rimuru登入成功=====")
 oepoll = OEPoll(cl)
+
 settingsOpen = codecs.open("temp.json","r","utf-8")
+preventsOpen = codecs.open("prevent.json","r","utf-8")
+
 settings = json.load(settingsOpen)
+prevents = json.load(preventsOpen)
+
 clMID = cl.profile.mid
 KAC=[cl]
 wait2 = {
@@ -43,6 +48,9 @@ def backupData():
     try:
         backup = settings
         f = codecs.open('temp.json','w','utf-8')
+        json.dump(backup, f, sort_keys=False, indent=4, ensure_ascii=True)
+        backup = prevents
+        f = codecs.open('prevent.json','w','utf-8')
         json.dump(backup, f, sort_keys=False, indent=4, ensure_ascii=True)
         backup = read
         f = codecs.open('read.json','w','utf-8')
@@ -388,29 +396,29 @@ def lineBot(op):
                 if text is None:
                     return
                 if not sender in settings['blacklist']:
-                    if sender in settings['limit']:
-                        if msg.text in settings['limit'][sender]['text']:
-                            if settings ['limit'][sender]['text'][msg.text] >= 3:
-                                settings ['limit'][sender]['text']['react'] = False
+                    if sender in prevents['limit']:
+                        if msg.text in prevents['limit'][sender]['text']:
+                            if prevents ['limit'][sender]['text'][msg.text] >= 3:
+                                prevents ['limit'][sender]['text']['react'] = False
                             else:
-                                settings ['limit'][sender]['text'][msg.text] += 1
-                                settings ['limit'][sender]['text']['react'] = True
+                                prevents ['limit'][sender]['text'][msg.text] += 1
+                                prevents ['limit'][sender]['text']['react'] = True
                         else:
                             try:
-                                del settings['limit'][sender]['text']
+                                del prevents['limit'][sender]['text']
                             except:
                                 pass
-                            settings['limit'][sender]['text'] = {}
-                            settings['limit'][sender]['text'][msg.text] = 1
-                            settings['limit'][sender]['text']['react'] = True
+                            prevents['limit'][sender]['text'] = {}
+                            prevents['limit'][sender]['text'][msg.text] = 1
+                            prevents['limit'][sender]['text']['react'] = True
                     else:
-                        settings['limit'][sender] = {}
-                        settings['limit'][sender]['stick'] = {}
-                        settings['limit'][sender]['text'] = {}
-                        settings['limit'][sender]['text'][msg.text] = 1
-                        settings['limit'][sender]['text']['react'] = True
+                        prevents['limit'][sender] = {}
+                        prevents['limit'][sender]['stick'] = {}
+                        prevents['limit'][sender]['text'] = {}
+                        prevents['limit'][sender]['text'][msg.text] = 1
+                        prevents['limit'][sender]['text']['react'] = True
                     if sender not in master:
-                        if settings['limit'][sender]['text']['react'] == False:
+                        if prevents['limit'][sender]['text']['react'] == False:
                             return
                     if msg.text in ["help","Help","HELP"]:
                         helpMessage = helpmessage()
