@@ -115,8 +115,7 @@ def lineBot(op):
             cl.findAndAddContactsByMid(op.param1)
             cl.sendMessage(op.param1, "哈囉{}~要跟莉姆露成為好朋友哦>///<".format(str(contact.displayName)))
             cl.sendMessage(op.param1, "使用前請至主頁貼文詳讀使用說明")
-            cl.sendMessage(op.param1, "↓↓如果有其他疑問可以私訊主人↓↓\n(沒事亂加主人會被主人封鎖哦˙˙)")
-            cl.sendContact(op.param1, "u66d4c27e8f45f025cf5774883b67ddc1")
+            cl.sendMessage(op.param1, "如果有其他疑問可以用《Creator》指令私訊主人\n(沒事亂加主人會被封鎖哦˙˙)")
         if op.type == 11:
             group = cl.getGroup(op.param1)
             contact = cl.getContact(op.param2)
