@@ -10,7 +10,7 @@ from googletrans import Translator
 botStart = time.time()
 
 #登入驗證
-cl = LINE("EserDGIwFhoFEXhXxKFd.4fSQ+KrPRBsCT64TOsg0xq.pYBlhuPzGhr8sCFM1U9qBZq/ao8TJDxNwiZ2sOe2CKk=")
+cl = LINE("Esn3Envd0cP763LGmMEd.4fSQ+KrPRBsCT64TOsg0xq.D1Yuv+DAxSrBkS6kbowlsc4kCJkuu2HQgh6ad8XY3U4=")
 channelToken = cl.getChannelResult()
 cl.log("莉姆露TOKEN:" + str(cl.authToken))
 
@@ -477,9 +477,6 @@ def lineBot(op):
                             cl.sendMessage(msg.to, "《已讀的人》%s\n[%s]" % (wait2['readMember'][msg.to],setTime[msg.to]))
                         else:
                             cl.sendMessage(msg.to, "《還沒設定已讀點哦¨》")
-                    elif text.lower() == 'msgbomb':
-                        bomb = (' ')
-                        cl.sendContact(to, bomb)
                     elif text.lower() == 'me':
                         sendMessageWithMention(to, sender)
                         cl.sendContact(to, sender)
