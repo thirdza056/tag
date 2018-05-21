@@ -33,7 +33,7 @@ wait2 = {
 }
 setTime = {}
 setTime = wait2['setTime']
-admin=[clMID]
+admin=['ue05b2afe4469adb49cb7ae2da121b45d',clMID]
 master=['u66d4c27e8f45f025cf5774883b67ddc1']
 msg_dict = {}
 bl = [""]
@@ -114,9 +114,8 @@ def lineBot(op):
             cl.sendMessage(ge,"《好友通知》\n》新增好友:" + contact.displayName + "\n》好友Mid:\n" + op.param1)
             cl.findAndAddContactsByMid(op.param1)
             cl.sendMessage(op.param1, "哈囉{}~要跟莉姆露成為好朋友哦>///<".format(str(contact.displayName)))
-            cl.sendMessage(op.param1, "使用前請至主頁貼文詳讀使用說明")
-            cl.sendMessage(op.param1, "↓↓如果有其他疑問可以私訊主人↓↓\n(沒事亂加主人會被主人封鎖哦˙˙)")
-            cl.sendContact(op.param1, "u66d4c27e8f45f025cf5774883b67ddc1")
+            cl.sendMessage(op.param1, "！使用前請至主頁貼文詳讀使用說明！")
+            cl.sendMessage(op.param1, "如果有其他疑問可以使用《Creator》指令私訊主人\n(主頁有說明之問題不予回應)")
         if op.type == 11:
             group = cl.getGroup(op.param1)
             contact = cl.getContact(op.param2)
@@ -130,7 +129,7 @@ def lineBot(op):
                 if op.param2 in settings['blacklist']:
                     if op.param3 in admin:
                         print ("[ BLACKJOIN ]黑單邀請加入群組: " + str(group.name))
-                        cl.sendMessage(ge, "《黑單使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2 + "\n》被邀請者名稱:" + contact2.displayName + "\n》被邀請者mid:\n" + op.param3)
+                        cl.sendMessage(ge, "《黑單使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n" +op.param1 + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2 + "\n》被邀請者名稱:" + contact2.displayName + "\n》被邀請者mid:\n" + op.param3)
                         cl.acceptGroupInvitation(op.param1)
                         cl.sendMessage(op.param1, "《黑單使用者》")
                         time.sleep(0.5)
@@ -140,7 +139,7 @@ def lineBot(op):
                 else:
                     if op.param3 in admin:
                         print ("[ NEWJOIN ]使用者邀請加入群組: " + str(group.name))
-                        cl.sendMessage(ge,"《普通使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2 + "\n》被邀請者名稱:" + contact2.displayName + "\n》被邀請者mid:\n" + op.param3)
+                        cl.sendMessage(ge,"《普通使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n" +op.param1 + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2 + "\n》被邀請者名稱:" + contact2.displayName + "\n》被邀請者mid:\n" + op.param3)
                         cl.acceptGroupInvitation(op.param1)
                         time.sleep(0.5)
                         cl.sendMessage(op.param1,"《使用者 " + contact1.displayName + " 邀請》")
@@ -185,7 +184,7 @@ def lineBot(op):
                     to = receiver
             else:
                 to = receiver
-            if sender in master:
+            if sender in master or admin:
                 if "KICK " in msg.text:
                     key = eval(msg.contentMetadata["MENTION"])
                     key["MENTIONEES"][0]["M"]
@@ -200,6 +199,77 @@ def lineBot(op):
                                 cl.kickoutFromGroup(to,[target])
                             except:
                                 pass
+                elif "MJOIN " in msg.text:
+                    midd = msg.text.replace("MJOIN ","")
+                    cl.findAndAddContactsByMid(midd)
+                    cl.inviteIntoGroup(msg.to,[midd])
+                elif "MIDK " in msg.text:
+                    midd = text.replace("MIDK ","")
+                    cl.kickoutFromGroup(to,[midd])
+                elif "NAMEK " in msg.text:
+                    _name = text.replace("NAMEK ","")
+                    gs = cl.getGroup(to)
+                    targets = []
+                    for g in gs.members:
+                        if _name in g.displayName:
+                            targets.append(g.mid)
+                    if targets == []:
+                        pass
+                    else:
+                        for target in targets:
+                            if target in master:
+                                pass
+                            else:
+                                try:
+                                    cl.kickoutFromGroup(to,[target])
+                                except:
+                                    pass
+                elif "CLEANK " in msg.text:
+                        vkick0 = msg.text.replace("CLEANK ","")
+                        vkick1 = vkick0.rstrip()
+                        vkick2 = vkick1.replace("@","")
+                        vkick3 = vkick2.rstrip()
+                        _name = vkick3
+                        gs = kicker03.getGroup(msg.to)
+                        targets = []
+                        for s in gs.members:
+                            if _name in s.displayName:
+                                targets.append(s.mid)
+                        if targets == []:
+                            pass
+                        else:
+                            for target in targets:
+                                try:
+                                    cl.kickoutFromGroup(msg.to,[target])
+                                    cl.findAndAddContactsByMid(target)
+                                    cl.inviteIntoGroup(msg.to,[target])
+                                    cl.cancelGroupInvitation(msg.to,[target])
+                                except:
+                                    pass
+                elif "RK " in msg.text:
+                    Ri0 = text.replace("RK ","")
+                    Ri1 = Ri0.rstrip()
+                    Ri2 = Ri1.replace("@","")
+                    Ri3 = Ri2.rstrip()
+                    _name = Ri3
+                    gs = cl.getGroup(msg.to)
+                    targets = []
+                    for s in gs.members:
+                        if _name in s.displayName:
+                            targets.append(s.mid)
+                    if targets == []:
+                        pass
+                    else:
+                        for target in targets:
+                            if target in admin:
+                                pass
+                            else:
+                                try:
+                                    cl.kickoutFromGroup(to,[target])
+                                    cl.findAndAddContactsByMid(target)
+                                    cl.inviteIntoGroup(to,[target])
+                                except:
+                                    pass
                 elif msg.text in ["SET"]:
                     try:
                         ret_ = "《設定》"
@@ -363,6 +433,9 @@ def lineBot(op):
                     n = cl.getGroupIdsJoined()
                     for manusia in n:
                         cl.sendMessage(manusia,(bctxt))
+                elif "RIMURULEAVE:" in msg.text:
+                    leave = text.replace("RIMURULEAVE:","")
+                    cl.leaveGroup(leave)
                 elif msg.text.lower().startswith("mid "):
                     if 'MENTION' in msg.contentMetadata.keys()!= None:
                         names = re.findall(r'@(\w+)', text)
@@ -496,6 +569,8 @@ def lineBot(op):
                         me = cl.getContact(sender)
                         cover = cl.getProfileCoverURL(sender)
                         cl.sendImageWithURL(msg.to, cover)
+                    elif text.lower() == 'mymid':
+                        cl.sendMessage(msg.to,sender)
                     elif msg.text.lower().startswith("picture "):
                         if 'MENTION' in msg.contentMetadata.keys()!= None:
                             names = re.findall(r'@(\w+)', text)
@@ -508,7 +583,7 @@ def lineBot(op):
                             for ls in lists:
                                 path = "http://dl.profile.line-cdn.net/" + cl.getContact(ls).pictureStatus
                                 cl.sendImageWithURL(msg.to, str(path))
-                    elif msg.text in ["cancel","Cancel","CANCEL"]:
+                    elif msg.text in ["CANCEL"]:
                         if msg.toType == 2:
                             X = cl.getGroup(msg.to)
                         if X.invitee is not None:
@@ -732,4 +807,3 @@ while True:
                 oepoll.setRevision(op.revision)
     except Exception as e:
         logError(e)
-        
