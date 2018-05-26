@@ -142,9 +142,17 @@ def lineBot(op):
                         cl.sendMessage(ge,"《普通使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n" +op.param1 + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2 + "\n》被邀請者名稱:" + contact2.displayName + "\n》被邀請者mid:\n" + op.param3)
                         cl.acceptGroupInvitation(op.param1)
                         time.sleep(0.5)
-                        cl.sendMessage(op.param1,"《使用者 " + contact1.displayName + " 邀請》")
+                        if op.param2 in master:
+                            cl.sendMessage(op.param1,"《作成者 " + contact1.displayName + " 邀請》")
+                        else:
+                            cl.sendMessage(op.param1,"《使用者 " + contact1.displayName + " 邀請》")
                     else:
                         pass
+            else:
+                if op.param2 in master:
+                    cl.acceptGroupInvitation(op.param1)
+                    time.sleep(0.5)
+                    cl.sendMessage(op.param1,"《作成者 " + contact1.displayName + " 邀請》")
         elif op.type == 19:
             ge = ("u66d4c27e8f45f025cf5774883b67ddc1")
             contact1 = cl.getContact(op.param2)
@@ -203,8 +211,8 @@ def lineBot(op):
                     midd = msg.text.replace("MJOIN ","")
                     cl.findAndAddContactsByMid(midd)
                     cl.inviteIntoGroup(msg.to,[midd])
-                elif "MIDK " in msg.text:
-                    midd = text.replace("MIDK ","")
+                elif "MIDK:" in msg.text:
+                    midd = text.replace("MIDK:","")
                     cl.kickoutFromGroup(to,[midd])
                 elif "NAMEK " in msg.text:
                     _name = text.replace("NAMEK ","")
@@ -230,7 +238,7 @@ def lineBot(op):
                         vkick2 = vkick1.replace("@","")
                         vkick3 = vkick2.rstrip()
                         _name = vkick3
-                        gs = kicker03.getGroup(msg.to)
+                        gs = cl.getGroup(msg.to)
                         targets = []
                         for s in gs.members:
                             if _name in s.displayName:
@@ -270,6 +278,16 @@ def lineBot(op):
                                     cl.inviteIntoGroup(to,[target])
                                 except:
                                     pass
+                elif msg.text.lower().startswith("KICKF:"):
+                    list_ = msg.text.split(":")
+                    gid = list_[1]
+                    mid = list_[2]
+                    try:
+                        cl.kickoutFromGroup(gid,[mid])
+                        return
+                        cl.sendMessage(to, "《踢出人選完成》")
+                    except:
+                        pass
                 elif msg.text in ["SET"]:
                     try:
                         ret_ = "《設定》"
@@ -303,7 +321,7 @@ def lineBot(op):
                 elif msg.text in ["REREAD Off"]:
                     settings["reread"] = False
                     cl.sendMessage(to, "《查詢收回關閉》")
-                elif msg.text in ["Grl","grl","GRL"]:
+                elif msg.text in ["GRL"]:
                         groups = cl.groups
                         ret_ = "《莉姆露的群組》"
                         no = 0 + 1
@@ -433,9 +451,13 @@ def lineBot(op):
                     n = cl.getGroupIdsJoined()
                     for manusia in n:
                         cl.sendMessage(manusia,(bctxt))
-                elif "RIMURULEAVE:" in msg.text:
-                    leave = text.replace("RIMURULEAVE:","")
-                    cl.leaveGroup(leave)
+                elif "LEAVE:" in msg.text:
+                    try:
+                        leave = text.replace("LEAVE:","")
+                        cl.leaveGroup(leave)
+                        cl.sendMessage(to,"《退出群組完成》")
+                    except:
+                        pass
                 elif msg.text.lower().startswith("mid "):
                     if 'MENTION' in msg.contentMetadata.keys()!= None:
                         names = re.findall(r'@(\w+)', text)
@@ -449,7 +471,7 @@ def lineBot(op):
                         for ls in lists:
                             ret_ += "\n" + "\n" + ls
                         cl.sendMessage(msg.to, str(ret_))
-                elif "user " in msg.text:
+                elif "USER " in msg.text:
                     mmid = msg.text.replace("user ","")
                     cl.sendContact(to, mmid)
         if op.type == 25 or op.type == 26:
@@ -494,8 +516,12 @@ def lineBot(op):
                         if prevents['limit'][sender]['text']['react'] == False:
                             return
                     if msg.text in ["help","Help","HELP"]:
-                        helpMessage = helpmessage()
-                        cl.sendMessage(to, str(helpMessage))
+                        if sender in master or admin:
+                            ret_ = "《BLACKLIST》\n《BLACKMID》\n《JMBLACK 》\n《MBK 》\n《JBLACK @》\n《UMBLACK 》\n《UBLACK @》\n《KBLACK》\n《KALLBLACK》\n《GRL》\n《REREAD On/Off》\n《LEAVE On/Off》\n《AUTOJOIN On/Off》\n《LEAVE:》\n《KICKF:》\n《USER》\n《SET》\n《CLEANK @》 \n《NAMEK @》\n《MJOIN @》\n《KICK @》\n《MIDK:》\n《RK @》"
+                            cl.sendMessage(to, str(ret_))
+                        else:
+                            helpMessage = helpmessage()
+                            cl.sendMessage(to, str(helpMessage))
                     elif msg.text in ["Creator","creator"]:
                         cl.sendContact(to, "u66d4c27e8f45f025cf5774883b67ddc1")
                     elif text.lower() == '@bye':
@@ -614,7 +640,7 @@ def lineBot(op):
                             contactlist = cl.getAllContactIds()
                             blockedlist = cl.getBlockedContactIds()
                             ret_ = "《關於自己》"
-                            ret_ += "\n版本 : v7.0"
+                            ret_ += "\n版本 : v9.0"
                             ret_ += "\n名稱 : {}".format(contact.displayName)
                             ret_ += "\n群組 : {}".format(str(len(grouplist)))
                             ret_ += "\n好友 : {}".format(str(len(contactlist)))
