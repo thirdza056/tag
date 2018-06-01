@@ -309,8 +309,6 @@ def lineBot(op):
                         else: ret_ += "\n自動加入群組 🈲"
                         if settings["autoLeave"] == True: ret_ += "\n自動離開副本 🆗"
                         else: ret_ += "\n自動離開副本 🈲"
-                        if settings["authorprotect"] == True: ret_ += "\n權限者保護 🆗"
-                        else: ret_ += "\n權限者保護 🈲"
                         cl.sendMessage(to, str(ret_))
                     except Exception as e:
                         cl.sendMessage(msg.to, str(e))
