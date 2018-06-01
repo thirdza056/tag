@@ -10,7 +10,7 @@ from googletrans import Translator
 botStart = time.time()
 
 #登入驗證
-cl = LINE("Esn3Envd0cP763LGmMEd.4fSQ+KrPRBsCT64TOsg0xq.D1Yuv+DAxSrBkS6kbowlsc4kCJkuu2HQgh6ad8XY3U4=")
+cl = LINE("EtFcYfw5TPJxdXT0H3Id.4fSQ+KrPRBsCT64TOsg0xq.tIGu6lZM2jdBc/s4ny70lFKL8itadaTYN/jFDIS8uVg=")
 channelToken = cl.getChannelResult()
 cl.log("莉姆露TOKEN:" + str(cl.authToken))
 
@@ -139,7 +139,7 @@ def lineBot(op):
                 else:
                     if op.param3 in admin:
                         print ("[ NEWJOIN ]使用者邀請加入群組: " + str(group.name))
-                        cl.sendMessage(ge,"《普通使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n" +op.param1 + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2 + "\n》被邀請者名稱:" + contact2.displayName + "\n》被邀請者mid:\n" + op.param3)
+                        cl.sendMessage(ge,"《使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n" +op.param1 + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2)
                         cl.acceptGroupInvitation(op.param1)
                         time.sleep(0.5)
                         if op.param2 in master:
@@ -149,17 +149,29 @@ def lineBot(op):
                     else:
                         pass
             else:
-                if op.param2 in master:
-                    cl.acceptGroupInvitation(op.param1)
-                    time.sleep(0.5)
-                    cl.sendMessage(op.param1,"《作成者 " + contact1.displayName + " 邀請》")
-        elif op.type == 19:
+                if op.param3 in admin:
+                    if op.param2 in master:
+                        cl.acceptGroupInvitation(op.param1)
+                        time.sleep(0.5)
+                        cl.sendMessage(op.param1,"《作成者 " + contact1.displayName + " 邀請》")
+                    else:
+                        cl.acceptGroupInvitation(op.param1)
+                        time.sleep(0.5)
+                        cl.sendMessage(op.param1,"《目前停止運行中。》\n依主頁公告 邀請使用者: " + contact1.displayName + " 黑單處理。")
+                        settings["blacklist"][op.param2] = True
+                        cl.sendMessage(op.param2, "《BLACK》\n您違反了使用規定:\n自動入群關閉時間擅自邀請\n因此被莉姆露列為黑單\n無法再使用任何指令功能\n詳情請看主頁公告")
+                        time.sleep(0.5)
+                        cl.leaveGroup(op.param1)
+                        cl.sendMessage(ge,"《使用者邀請》" + "\n》群組名稱:" + str(group.name) + "\n" +op.param1 + "\n》邀請者名稱:" + contact1.displayName + "\n》邀請者MID:\n" + op.param2 + "\n》被邀請者名稱:" + contact2.displayName + "\n》被邀請者mid:\n" + op.param3)
+                else:
+                    pass
+        if op.type == 19:
             ge = ("u66d4c27e8f45f025cf5774883b67ddc1")
             contact1 = cl.getContact(op.param2)
             group = cl.getGroup(op.param1)
             contact2 = cl.getContact(op.param3)
             print ("[ KICK ]有人把人踢出群組 群組名稱: " + str(group.name) + "\n" + op.param1 +"\n踢人的人: " + contact1.displayName + "\nMid: " + contact1.mid + "\n被踢的人" + contact2.displayName + "\nMid:" + contact2.mid )
-            cl.sendMessage(ge,"《踢出群組》" + "\n》群組名稱:" + str(group.name) +"\n》踢人的人: " + contact1.displayName + "\n》Mid: " + contact1.mid + "\n》被踢的人" + contact2.displayName + "\n》Mid: " + contact2.mid )
+            cl.sendMessage(ge,"《踢出群組》" + "\n》群組名稱:" + str(group.name) + "\n" + op.param1 + "\n》踢人的人: " + contact1.displayName + "\n》Mid: " + contact1.mid + "\n》被踢的人" + contact2.displayName + "\n》Mid: " + contact2.mid )
             try:
                 if op.param3 not in admin or master:
                     arrData = ""
@@ -171,10 +183,10 @@ def lineBot(op):
                     arrData = {'S':slen, 'E':elen, 'M':op.param3}
                     arr.append(arrData)
                     text += mention + '掰掰QAO/'
-                    cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
+                    cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)     
             except:
                 settings["blacklist"][op.param2] = True
-                cl.sendMessage(op.param2, "《BLACK》\n不好意思,您違反了使用規定\n因此被莉姆露列為黑單\n無法再使用任何指令功能\n詳情請看主頁公告")
+                cl.sendMessage(op.param2, "《BLACK》\n您違反了使用規定:\n未經允許踢出\n因此被莉姆露列為黑單\n無法再使用任何指令功能\n詳情請看主頁公告")
                 cl.sendMessage(ge, "《黑單通知》" + "\n》顯示名稱:" + contact1.displayName + "\n》黑單者MID:\n" + op.param2)
                 print("《黑單通知》" + "顯示名稱:" + contact1.displayName + "》黑單者MID:" + op.param2)
         if op.type == 24:
@@ -225,7 +237,7 @@ def lineBot(op):
                         pass
                     else:
                         for target in targets:
-                            if target in master:
+                            if target in admin or master:
                                 pass
                             else:
                                 try:
@@ -269,7 +281,7 @@ def lineBot(op):
                         pass
                     else:
                         for target in targets:
-                            if target in admin:
+                            if target in admin or master:
                                 pass
                             else:
                                 try:
@@ -297,6 +309,8 @@ def lineBot(op):
                         else: ret_ += "\n自動加入群組 🈲"
                         if settings["autoLeave"] == True: ret_ += "\n自動離開副本 🆗"
                         else: ret_ += "\n自動離開副本 🈲"
+                        if settings["authorprotect"] == True: ret_ += "\n權限者保護 🆗"
+                        else: ret_ += "\n權限者保護 🈲"
                         cl.sendMessage(to, str(ret_))
                     except Exception as e:
                         cl.sendMessage(msg.to, str(e))
@@ -320,6 +334,12 @@ def lineBot(op):
                     cl.sendMessage(to, "《查詢收回開啟》")
                 elif msg.text in ["REREAD Off"]:
                     settings["reread"] = False
+                    cl.sendMessage(to, "《查詢收回關閉》")
+                elif msg.text in ["AUTHPT On"]:
+                    settings["authorprotect"] = True
+                    cl.sendMessage(to, "《查詢收回開啟》")
+                elif msg.text in ["AUTHPT Off"]:
+                    settings["authorprotect"] = False
                     cl.sendMessage(to, "《查詢收回關閉》")
                 elif msg.text in ["GRL"]:
                         groups = cl.groups
@@ -446,6 +466,14 @@ def lineBot(op):
                     t = cl.getAllContactIds()
                     for manusia in t:
                         cl.sendMessage(manusia,(bctxt))
+                elif text.lower() == 'ALLCLEAN':
+                    gid = cl.getGroupIdsInvited()
+                    start = time.time()
+                    for i in gid:
+                        cl.rejectGroupInvitation(i)
+                        elapsed_time = time.time() - start
+                        cl.sendMessage(to, "全部群組邀請已取消")
+                        cl.sendMessage(to, "取消時間: %s秒" % (elapsed_time))
                 elif "Groupsbc:" in msg.text:
                     bctxt = text.replace("Groupsbc:","")
                     n = cl.getGroupIdsJoined()
@@ -515,13 +543,12 @@ def lineBot(op):
                     if sender not in master:
                         if prevents['limit'][sender]['text']['react'] == False:
                             return
+                    if sender not in admin:
+                        if prevents['limit'][sender]['text']['react'] == False:
+                            return
                     if msg.text in ["help","Help","HELP"]:
-                        if sender in master or admin:
-                            ret_ = "《BLACKLIST》\n《BLACKMID》\n《JMBLACK 》\n《MBK 》\n《JBLACK @》\n《UMBLACK 》\n《UBLACK @》\n《KBLACK》\n《KALLBLACK》\n《GRL》\n《REREAD On/Off》\n《LEAVE On/Off》\n《AUTOJOIN On/Off》\n《LEAVE:》\n《KICKF:》\n《USER》\n《SET》\n《CLEANK @》 \n《NAMEK @》\n《MJOIN @》\n《KICK @》\n《MIDK:》\n《RK @》"
-                            cl.sendMessage(to, str(ret_))
-                        else:
-                            helpMessage = helpmessage()
-                            cl.sendMessage(to, str(helpMessage))
+                        helpMessage = helpmessage()
+                        cl.sendMessage(to, str(helpMessage))
                     elif msg.text in ["Creator","creator"]:
                         cl.sendContact(to, "u66d4c27e8f45f025cf5774883b67ddc1")
                     elif text.lower() == '@bye':
