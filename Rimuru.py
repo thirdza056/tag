@@ -350,7 +350,6 @@ def lineBot(op):
                         ret_ += "\n《總共 {} 個》".format(str(len(groups)))
                         cl.sendMessage(to, str(ret_))
                 elif "JBLACK @" in msg.text:
-                    if msg.toType == 2:
                         print ("[ JBAN ] 成功")
                         key = eval(msg.contentMetadata["MENTION"])
                         key["MENTIONEES"][0]["M"]
@@ -398,7 +397,6 @@ def lineBot(op):
                     except:
                         pass
                 elif "UBLACK @" in msg.text:
-                    if msg.toType == 2:
                         print ("[ UBAN ] 成功")
                         key = eval(msg.contentMetadata["MENTION"])
                         key["MENTIONEES"][0]["M"]
