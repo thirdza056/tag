@@ -8,7 +8,7 @@
     "changeGroupPicture": {},
     "wblack": false,
     "wblacklist": false,
-    "autoJoin": false,
+    "autoJoin": true,
     "blacklist": {
         "u33d7a37e3aeb1810cb262ec52d6e0659": true,
         "u205a83484a66e918b7390a339825cfab": true,
