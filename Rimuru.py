@@ -422,9 +422,9 @@ def lineBot(op):
                             try:
                                 mc += "\n》" + cl.getContact(mi_d).displayName
                             except:
-                                mc += "\n》" + "NONE FOUND !"
                                 try:
                                     del settings["blacklist"][mi_d]
+                                    cl.sendMessage(to, "《刪除不明帳號...》")
                                 except:
                                     pass
                         cl.sendMessage(to, mc)
